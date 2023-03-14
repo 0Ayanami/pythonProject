@@ -1,15 +1,16 @@
 import string
 
 
-while True:
-    # TODO: 用户输入密码
-    password = input('请输入新密码：')
-    # TODO：判断密码的安全性
-
+def evaluate_password(password):
+    # TODO：验证密码的安全性
+    result = False
     #  用一个五位二进制码分别表示
     #  是否有大写字母、是否有小写字母、
     #  是否有数字、是否有标点符号和长度是否合格
     password_state = 0b00000
+
+    if len(password) >= 8:
+        password_state |= 0b00001
 
     for char in password:
         if char in string.ascii_uppercase:
@@ -21,13 +22,10 @@ while True:
         else:
             password_state |= 0b00010
 
-        if len(password) >= 8:
-            password_state |= 0b00001
-
-        # TODO：输出
+    # TODO：输出
     if password_state == 0b11111:
         print('密码安全性合格。\n')
-        break
+        result = True
     else:
         prompt = '密码不符合，'
         if password_state & 0b00001 == 0:
@@ -42,3 +40,16 @@ while True:
             prompt += '不包含特殊符号，'
         prompt = prompt[:-1]
         print(prompt)
+    return result
+
+
+def main():
+    # TODO：输入密码
+    while True:
+        user_password = input('请输入新密码：')
+        if evaluate_password(user_password):
+            break
+
+
+if __name__ == "__main__":
+    main()
