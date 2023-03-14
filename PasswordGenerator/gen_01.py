@@ -5,40 +5,40 @@ while True:
     # TODO: 用户输入密码
     password = input('请输入新密码：')
     # TODO：判断密码的安全性
-    have_upper = False
-    have_lower = False
-    have_digit = False
-    have_punc = False
+
+    #  用一个五位二进制码分别表示
+    #  是否有大写字母、是否有小写字母、
+    #  是否有数字、是否有标点符号和长度是否合格
+    password_state = 0b00000
 
     for char in password:
         if char in string.ascii_uppercase:
-            have_upper = True
+            password_state |= 0b10000
         elif char in string.ascii_lowercase:
-            have_lower = True
+            password_state |= 0b01000
         elif char in string.digits:
-            have_digit = True
+            password_state |= 0b00100
         else:
-            have_punc = True
+            password_state |= 0b00010
 
-        have_enough = len(password) >= 8
-        is_secure = (have_enough and have_upper
-                     and have_lower and have_digit
-                     and have_punc)
+        if len(password) >= 8:
+            password_state |= 0b00001
+
         # TODO：输出
-        if is_secure:
-            print('密码安全性合格。\n')
-            break
-        else:
-            prompt = '密码不符合，'
-            if not have_enough:
-                prompt += '长度不符，'
-            if not have_upper:
-                prompt += '不包含大写字符，'
-            if not have_lower:
-                prompt += '不包含小写字符，'
-            if not have_digit:
-                prompt += '不包含数字，'
-            if not have_punc:
-                prompt += '不包含特殊符号，'
-    prompt = prompt[:-1]
-    print(prompt)
+    if password_state == 0b11111:
+        print('密码安全性合格。\n')
+        break
+    else:
+        prompt = '密码不符合，'
+        if password_state & 0b00001 == 0:
+            prompt += '长度不符，'
+        if password_state & 0b10000 == 0:
+            prompt += '不包含大写字符，'
+        if password_state & 0b01000 == 0:
+            prompt += '不包含小写字符，'
+        if password_state & 0b00100 == 0:
+            prompt += '不包含数字，'
+        if password_state & 0b00010 == 0:
+            prompt += '不包含特殊符号，'
+        prompt = prompt[:-1]
+        print(prompt)
